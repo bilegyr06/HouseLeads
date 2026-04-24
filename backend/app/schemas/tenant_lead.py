@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, EmailStr, field_validator
-from datetime import date
+from datetime import date, datetime
 from typing import Optional
 import re
 
@@ -39,12 +39,20 @@ class TenantLeadCreate(BaseModel):
         return move_in_date
 
 class TenantLeadResponse(BaseModel):
-    id: str
+    """Response schema - returns complete lead data with system-generated fields."""
+    id: int
     full_name: str
     phone_number: str
+    email: Optional[str] = None
     location_preference: str
+    budget_min: Optional[int] = None
     budget_max: int
     property_type: str
+    move_in_date: date
     lead_score: float
     status: str
-    created_at: str
+    created_at: datetime
+    updated_at: datetime
+    
+    class Config:
+        from_attributes = True  # ORM mode - allows mapping from SQLAlchemy models

@@ -1,26 +1,51 @@
-from sqlalchemy import Column, Integer, String, DateTime, Enum, Float, Date
-from sqlalchemy.dialects.postgresql import UUID, ARRAY
-from sqlalchemy.sql import func
-import uuid
+from sqlalchemy import Column, Integer, String, Float, Date, DateTime, Index
+from datetime import datetime
+
 from app.core.database import Base
 
+
 class TenantLead(Base):
+    """
+    SQLAlchemy ORM model for tenant leads.
+    Represents a tenant looking for rental properties.
+    """
+    
     __tablename__ = "tenant_leads"
-
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    full_name = Column(String, nullable=False)
-    phone_number = Column(String, nullable=False, unique=False)  # we'll normalize
-    email = Column(String, nullable=True)
-
-    location_preference = Column(String, nullable=False)  # e.g. "Lekki", "Yaba"
-    budget_min = Column(Integer, nullable=True)  # in Naira
+    
+    # Primary Key
+    id = Column(Integer, primary_key=True, index=True)
+    
+    # Personal Information
+    full_name = Column(String(100), nullable=False, index=True)
+    phone_number = Column(String(15), nullable=False, unique=True, index=True)
+    email = Column(String(100), nullable=True)
+    
+    # Lead Preferences
+    location_preference = Column(String(100), nullable=False, index=True)
+    budget_min = Column(Integer, nullable=True)
     budget_max = Column(Integer, nullable=False)
-    property_type = Column(String, nullable=False)  # "self-contain", "1 bedroom", etc.
+    property_type = Column(String(50), nullable=False)
     move_in_date = Column(Date, nullable=False)
-
-    urgency_score = Column(Enum("LOW", "MEDIUM", "HIGH", name="urgency_enum"), default="MEDIUM")
+    
+    # Scoring & Status
     lead_score = Column(Float, default=0.0)
-
-    status = Column(Enum("NEW", "VALIDATED", "SENT", "SOLD", "CLOSED", name="lead_status"), default="NEW")
-
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    status = Column(
+        String(20),
+        default="new",
+        index=True,
+        comment="new, contacted, interested, matched, closed"
+    )
+    
+    # Timestamps
+    created_at = Column(DateTime, default=datetime.utcnow, index=True, nullable=False)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+    
+    # Indexes for common queries
+    __table_args__ = (
+        Index("idx_location_status", "location_preference", "status"),
+        Index("idx_budget_type", "budget_max", "property_type"),
+        Index("idx_move_in_date", "move_in_date"),
+    )
+    
+    def __repr__(self) -> str:
+        return f"<TenantLead(id={self.id}, full_name='{self.full_name}', phone='{self.phone_number}')>"
