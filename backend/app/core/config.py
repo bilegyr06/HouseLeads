@@ -6,7 +6,7 @@ class Settings(BaseSettings):
     """Application settings loaded from .env file."""
     
     # Database Configuration
-    DATABASE_URL: str = "postgresql+asyncpg://user:password@localhost/naijahomeleads"
+    DATABASE_URL: str = "postgresql+asyncpg://user:password@localhost/homeleads"
     
     # Paystack Configuration
     PAYSTACK_SECRET_KEY: str
@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     
     # Application Configuration
-    APP_NAME: str = "NaijaHomeLeads API"
+    APP_NAME: str = "HomeLeads API"
     DEBUG: bool = False
     API_V1_STR: str = "/api/v1"
     

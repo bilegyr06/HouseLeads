@@ -1,5 +1,5 @@
 """
-SQLAlchemy ORM models for NaijaHomeLeads.
+SQLAlchemy ORM models for HomeLeads.
 All models are imported here to ensure they're registered with Base.
 """
 

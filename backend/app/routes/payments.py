@@ -66,7 +66,7 @@ async def initialize_payment(
         data={
             "authorization_url": f"https://checkout.paystack.com/mock_{payment_data.lead_id}_{payment_data.agent_id}",
             "access_code": f"mock_access_{payment_data.lead_id}",
-            "reference": f"NAIJA_{payment_data.lead_id}_{payment_data.agent_id}"
+            "reference": f"{payment_data.lead_id}_{payment_data.agent_id}"
         }
     )
 
