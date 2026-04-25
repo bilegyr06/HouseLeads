@@ -3,7 +3,6 @@ from datetime import datetime
 
 from app.core.database import Base
 
-
 class TenantLead(Base):
     """
     SQLAlchemy ORM model for tenant leads.

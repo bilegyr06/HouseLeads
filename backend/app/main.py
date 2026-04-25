@@ -115,19 +115,19 @@ api_v1_prefix = "/api/v1"
 
 app.include_router(
     leads.router,
-    prefix=f"{api_v1_prefix}/leads",
+    prefix=f"{api_v1_prefix}",
     tags=["Leads"],
 )
 
 app.include_router(
     agents.router,
-    prefix=f"{api_v1_prefix}/agents",
+    prefix=f"{api_v1_prefix}",
     tags=["Agents"],
 )
 
 app.include_router(
     payments.router,
-    prefix=f"{api_v1_prefix}/payments",
+    prefix=f"{api_v1_prefix}",
     tags=["Payments"],
 )
 

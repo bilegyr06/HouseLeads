@@ -17,7 +17,7 @@ from app.schemas.payment import (
     LeadPurchaseResponse
 )
 
-router = APIRouter(prefix="/payments", tags=["payments"])
+router = APIRouter(prefix="/payments", tags=["Payments"])
 
 # Placeholder for actual Paystack SDK
 PAYSTACK_BASE_URL = "https://api.paystack.co"

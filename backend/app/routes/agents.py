@@ -8,7 +8,7 @@ from app.models.agent import Agent
 from app.schemas.agent import AgentCreate, AgentUpdate, AgentResponse
 from app.utils.helpers import normalize_phone_number, standardize_location
 
-router = APIRouter(prefix="/agents", tags=["agents"])
+router = APIRouter(prefix="/agents", tags=["Agents"])
 
 
 @router.post("/", response_model=AgentResponse, status_code=status.HTTP_201_CREATED)

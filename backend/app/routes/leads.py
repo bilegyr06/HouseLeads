@@ -10,7 +10,7 @@ from app.services.lead_scoring import calculate_lead_score
 from app.services.matching import MatchingService
 from app.utils.helpers import normalize_phone_number, standardize_location
 
-router = APIRouter(prefix="/leads", tags=["leads"])
+router = APIRouter(prefix="/leads", tags=["Leads"])
 
 
 @router.post("/", response_model=TenantLeadResponse, status_code=status.HTTP_201_CREATED)
