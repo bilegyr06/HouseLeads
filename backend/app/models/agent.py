@@ -20,6 +20,9 @@ class Agent(Base):
     phone_number = Column(String(15), nullable=False, unique=True, index=True)
     email = Column(String(100), nullable=False, unique=True, index=True)
     
+    # Authentication
+    password_hash = Column(String(255), nullable=False, index=True, comment="Hashed password using bcrypt")
+    
     # Agent Details
     location_area = Column(String(100), nullable=False, index=True, comment="Geographic area they operate in")
     agency_name = Column(String(100), nullable=True)

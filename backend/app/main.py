@@ -12,7 +12,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from app.core.config import settings
 from app.core.database import Base, engine
-from app.routes import leads, agents, payments
+from app.routes import leads, agents, payments, auth
 
 
 # Lifespan context manager for database initialization
@@ -112,6 +112,12 @@ async def root():
 
 # Register API routers with v1 prefix
 api_v1_prefix = "/api/v1"
+
+app.include_router(
+    auth.router,
+    prefix=f"{api_v1_prefix}",
+    tags=["Authentication"],
+)
 
 app.include_router(
     leads.router,
