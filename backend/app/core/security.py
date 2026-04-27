@@ -17,7 +17,8 @@ from sqlalchemy import select
 
 
 # Password hashing context
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Using argon2 algorithm instead of bcrypt for better stability and security
+pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 
 
 # ============================================================================

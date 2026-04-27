@@ -3,9 +3,11 @@ Authentication routes for agent login and signup.
 Provides endpoints for agent authentication with JWT tokens.
 """
 
+import logging
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 
 from app.core.database import get_session
 from app.core.security import (
@@ -20,6 +22,8 @@ from app.schemas.auth import (
     SignupRequest,
     SignupResponse,
 )
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
@@ -44,49 +48,96 @@ async def signup(
     Raises:
         HTTPException: If email or phone already registered
     """
-    # Check if email already exists
-    result = await session.execute(
-        select(Agent).where(Agent.email == data.email)
-    )
-    if result.scalar_one_or_none():
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Email already registered"
+    try:
+        logger.info(f"Signup request for email: {data.email}, phone: {data.phone_number}")
+        
+        # Check if email already exists
+        logger.debug("Checking if email already exists...")
+        result = await session.execute(
+            select(Agent).where(Agent.email == data.email)
+        )
+        if result.scalar_one_or_none():
+            logger.warning(f"Signup attempt with existing email: {data.email}")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Email already registered"
+            )
+        logger.debug("Email check passed")
+        
+        # Check if phone number already exists
+        logger.debug("Checking if phone number already exists...")
+        result = await session.execute(
+            select(Agent).where(Agent.phone_number == data.phone_number)
+        )
+        if result.scalar_one_or_none():
+            logger.warning(f"Signup attempt with existing phone: {data.phone_number}")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Phone number already registered"
+            )
+        logger.debug("Phone number check passed")
+        
+        # Hash password
+        logger.debug("Hashing password...")
+        try:
+            password_hash = hash_password(data.password)
+            logger.debug("Password hashed successfully")
+        except Exception as hash_err:
+            logger.error(f"Error hashing password: {str(hash_err)}", exc_info=True)
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Error processing password. Please try again."
+            )
+        
+        # Create new agent with hashed password
+        logger.debug("Creating Agent object...")
+        agent = Agent(
+            email=data.email,
+            password_hash=password_hash,
+            full_name=data.full_name,
+            phone_number=data.phone_number,
+            location_area=data.location_area,
+            is_active=True,
+            rating=0.0,
+            total_leads_matched=0,
+            total_leads_converted=0,
+        )
+        
+        logger.debug("Adding agent to session...")
+        session.add(agent)
+        
+        logger.debug("Committing session...")
+        await session.commit()
+        logger.info(f"Agent committed to database")
+        
+        logger.debug("Refreshing agent object...")
+        await session.refresh(agent)
+        logger.info(f"Agent signup successful: id={agent.id}, email={agent.email}")
+        
+        return SignupResponse(
+            agent_id=agent.id,
+            email=agent.email,
+            full_name=agent.full_name,
+            message="Agent created successfully. Please log in."
         )
     
-    # Check if phone number already exists
-    result = await session.execute(
-        select(Agent).where(Agent.phone_number == data.phone_number)
-    )
-    if result.scalar_one_or_none():
+    except HTTPException:
+        # Re-raise HTTP exceptions (already have proper error messages)
+        raise
+    except IntegrityError as integrity_err:
+        logger.error(f"IntegrityError during signup: {str(integrity_err)}", exc_info=True)
+        await session.rollback()
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Phone number already registered"
+            detail="A user with this email or phone number already exists"
         )
-    
-    # Create new agent with hashed password
-    agent = Agent(
-        email=data.email,
-        password_hash=hash_password(data.password),
-        full_name=data.full_name,
-        phone_number=data.phone_number,
-        location_area=data.location_area,
-        is_active=True,
-        rating=0.0,
-        total_leads_matched=0,
-        total_leads_converted=0,
-    )
-    
-    session.add(agent)
-    await session.commit()
-    await session.refresh(agent)
-    
-    return SignupResponse(
-        agent_id=agent.id,
-        email=agent.email,
-        full_name=agent.full_name,
-        message="Agent created successfully. Please log in."
-    )
+    except Exception as err:
+        logger.error(f"Unexpected error during signup: {str(err)}", exc_info=True)
+        await session.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Signup failed: {str(err)}"
+        )
 
 
 @router.post("/login", response_model=LoginResponse)

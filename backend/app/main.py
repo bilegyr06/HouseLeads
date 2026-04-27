@@ -59,15 +59,27 @@ app.add_middleware(
 @app.exception_handler(SQLAlchemyError)
 async def sqlalchemy_exception_handler(request: Request, exc: SQLAlchemyError):
     """Handle database errors gracefully."""
+    # Import logging to log the error
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.error(f"SQLAlchemy error: {str(exc)}", exc_info=True)
+    
     return JSONResponse(
         status_code=500,
-        content={"detail": "Database error occurred. Please try again later."},
+        content={
+            "detail": "Database error occurred. Please try again later.",
+            "error": str(exc) if settings.DEBUG else None
+        },
     )
 
 
 @app.exception_handler(Exception)
 async def general_exception_handler(request: Request, exc: Exception):
     """Handle unexpected errors."""
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.error(f"Unexpected error: {str(exc)}", exc_info=True)
+    
     if settings.DEBUG:
         # Return detailed error in development
         return JSONResponse(

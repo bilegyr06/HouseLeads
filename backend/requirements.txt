@@ -6,7 +6,7 @@ sqlalchemy==2.0.38
 asyncpg==0.30.0
 alembic==1.14.1
 python-dotenv==1.0.1
-passlib[bcrypt]==1.7.4
+passlib[argon2]==1.7.4
 python-jose[cryptography]==3.4.0
 httpx==0.28.1
 paystack-sdk==1.0.1   # Official Paystack Python client (or paystackease if you prefer simpler wrapper)
