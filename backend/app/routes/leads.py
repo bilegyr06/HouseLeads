@@ -35,7 +35,10 @@ async def create_lead(
     
     # Normalize and standardize input
     normalized_phone = normalize_phone_number(lead_data.phone_number)
-    standardized_location = standardize_location(lead_data.location_preference)
+    
+    # Support multiple locations by standardizing each component
+    location_list = [standardize_location(loc.strip()) for loc in lead_data.location_preference.split(",") if loc.strip()]
+    standardized_location = ", ".join(location_list)
     
     # Calculate lead score
     lead_score = calculate_lead_score(lead_data)
@@ -94,7 +97,7 @@ async def list_leads(
     
     if location_filter:
         standardized = standardize_location(location_filter)
-        query = query.where(TenantLead.location_preference == standardized)
+        query = query.where(TenantLead.location_preference.contains(standardized))
     
     # Order by creation date, newest first
     query = query.order_by(desc(TenantLead.created_at)).offset(skip).limit(limit)

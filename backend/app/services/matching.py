@@ -69,9 +69,13 @@ class MatchingService:
         Returns:
             Match score (0.0 to 1.0)
         """
-        # Location score (40%)
-        location_score = calculate_distance_score(agent.location_area, lead.location_preference)
-        location_weighted = location_score * 0.40
+        # Location score (40%) - Handle multiple lead locations
+        lead_locations = [loc.strip() for loc in lead.location_preference.split(",")]
+        # Get the best score among all preferred locations
+        location_scores = [calculate_distance_score(agent.location_area, loc) for loc in lead_locations]
+        best_location_score = max(location_scores) if location_scores else 0.0
+        
+        location_weighted = best_location_score * 0.40
         
         # Agent rating score (30%) - normalize to 0.0-1.0 (out of 5.0)
         rating_score = min(agent.rating / 5.0, 1.0)

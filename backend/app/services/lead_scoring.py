@@ -40,7 +40,9 @@ def calculate_lead_score(lead: TenantLeadCreate) -> float:
 
     # Hot locations (island premium) - case insensitive
     hot_locations = {"lekki", "ikoyi", "victoria island", "ajah", "banana island"}
-    if lead.location_preference and lead.location_preference.lower() in hot_locations:
+    lead_locations = [loc.strip().lower() for loc in (lead.location_preference or "").split(",")]
+    
+    if any(loc in hot_locations for loc in lead_locations):
         score += 30
 
     # High-demand property types
