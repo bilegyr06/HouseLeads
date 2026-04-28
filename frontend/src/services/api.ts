@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { TenantLeadRequest, TenantLeadResponse, ApiError } from '../types/types';
+import type { TenantLeadRequest, TenantLeadResponse, ApiError } from '../types/types';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
 
@@ -18,7 +18,7 @@ export const submitTenantLead = async (
   formData: TenantLeadRequest
 ): Promise<{ success: boolean; data?: TenantLeadResponse; error?: ApiError }> => {
   try {
-    const response = await api.post<TenantLeadResponse>('/leads/', formData);
+    const response = await api.post<TenantLeadResponse>('/api/v1/leads/', formData);
     return { success: true, data: response.data };
   } catch (err: any) {
     // Handle specific error responses

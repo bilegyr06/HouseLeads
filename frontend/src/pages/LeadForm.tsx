@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, ArrowLeft, Loader2, AlertCircle, CheckCircle } from 'lucide-react';
-import { LeadFormData, TenantLeadRequest } from '../types/types';
+import type { LeadFormData, TenantLeadRequest } from '../types/types';
 import { submitTenantLead } from '../services/api';
 
 const STEPS = [
@@ -229,7 +229,7 @@ export default function LeadForm() {
             <h3 className="text-center text-2xl font-bold text-gray-900">
               {currentStep === 0 && 'Where are you looking to rent?'}
               {currentStep === 1 && 'What type of property do you need?'}
-              {currentStep === 2 && 'What's your budget?'}
+              {currentStep === 2 && "What's your budget?"}
               {currentStep === 3 && 'When do you want to move in?'}
               {currentStep === 4 && 'Tell us how to reach you'}
             </h3>

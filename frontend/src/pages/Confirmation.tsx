@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { CheckCircle, MessageSquare, Share2 } from 'lucide-react';
-import { TenantLeadResponse } from '../types/types';
+import type { TenantLeadResponse } from '../types/types';
 
 export default function Confirmation() {
   const location = useLocation();
