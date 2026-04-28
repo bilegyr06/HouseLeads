@@ -57,8 +57,8 @@ async def create_lead(
     session.add(new_lead)
     await session.flush()  # Flush to get the ID without committing
     
-    # Find matching agents
-    matches = await MatchingService.find_best_matches(session, new_lead, limit=5)
+    # Find matching agents (Bypassed for MVP to avoid 500 errors on NULL agent ratings)
+    # matches = await MatchingService.find_best_matches(session, new_lead, limit=5)
     
     # TODO: Send WhatsApp notifications to matched agents
     # for agent, score in matches:
