@@ -76,7 +76,7 @@ export default function Confirmation() {
           </div>
 
           {/* Summary Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+          {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
             <div className="p-4 bg-gray-50 rounded-lg">
               <p className="text-sm text-gray-600 font-medium">Location</p>
               <p className="text-lg font-semibold text-gray-900 mt-1">
@@ -94,8 +94,7 @@ export default function Confirmation() {
             <div className="p-4 bg-gray-50 rounded-lg">
               <p className="text-sm text-gray-600 font-medium">Budget</p>
               <p className="text-lg font-semibold text-gray-900 mt-1">
-                ₦{lead.budget_max.toLocaleString()}
-                {lead.budget_min && ` - ₦${lead.budget_max.toLocaleString()}`}
+                {`₦${lead.budget_min?.toLocaleString()} - ₦${lead.budget_max.toLocaleString()}`}
               </p>
             </div>
 
@@ -109,7 +108,7 @@ export default function Confirmation() {
                 })}
               </p>
             </div>
-          </div>
+          </div> */}
 
           {/* Action Buttons */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
