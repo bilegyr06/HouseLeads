@@ -12,7 +12,7 @@ const api = axios.create({
 
 /**
  * Submit tenant lead form to backend
- * POST /leads endpoint
+ * POST /api/v1/leads endpoint
  */
 export const submitTenantLead = async (
   formData: TenantLeadRequest

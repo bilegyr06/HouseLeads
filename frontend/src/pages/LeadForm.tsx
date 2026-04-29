@@ -181,19 +181,21 @@ export default function LeadForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex flex-col">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-2xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
-          <h1 className="text-2xl font-bold text-blue-600">HomeLeads</h1>
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+      {/* Logo */}
+      <div className="mb-8 text-center">
+        <div className="inline-block">
+          <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center mb-2">
+            <span className="text-white font-bold">HL</span>
+          </div>
         </div>
-      </header>
+        <h1 className="text-lg font-bold text-blue-600">HomeLeads</h1>
+      </div>
 
       {/* Form Container */}
-      <main className="flex-1 flex items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
-        <div className="max-w-2xl w-full bg-white rounded-lg shadow-lg p-8">
-          {/* Step Indicator */}
-          <div className="mb-8">
+      <div className="max-w-2xl w-full bg-white rounded-lg shadow-lg p-8">
+      {/* Step Indicator */}
+      <div className="mb-8">
             <div className="flex justify-between mb-4">
               {STEPS.map((step, index) => (
                 <div
@@ -219,10 +221,10 @@ export default function LeadForm() {
             <p className="text-center text-sm text-gray-600">
               Step {currentStep + 1} of {STEPS.length}
             </p>
-          </div>
+      </div>
 
-          {/* Step Header */}
-          <div className="mb-8">
+      {/* Step Header */}
+      <div className="mb-8">
             <h2 className="text-center text-sm font-bold text-gray-500 tracking-wide uppercase mb-2">
               LET'S FIND YOU A HOUSE FAST
             </h2>
@@ -233,20 +235,20 @@ export default function LeadForm() {
               {currentStep === 3 && 'When do you want to move in?'}
               {currentStep === 4 && 'Tell us how to reach you'}
             </h3>
-          </div>
+      </div>
 
-          {/* Error Message */}
-          {apiError && (
+      {/* Error Message */}
+      {apiError && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
               <AlertCircle className="text-red-600 flex-shrink-0 mt-0.5" size={20} />
               <p className="text-red-700 text-sm">{apiError}</p>
             </div>
-          )}
+      )}
 
-          {/* Step Content */}
-          <div className="mb-8">
+      {/* Step Content */}
+      <div className="mb-8">
             {/* Step 0: Location */}
-            {currentStep === 0 && (
+        {currentStep === 0 && (
               <div className="space-y-3">
                 {LOCATIONS.map((location) => (
                   <button
@@ -362,8 +364,8 @@ export default function LeadForm() {
               </div>
             )}
 
-            {/* Step 3: Move-in Date */}
-            {currentStep === 3 && (
+      {/* Step 3: Move-in Date */}
+      {currentStep === 3 && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   When do you want to move in?
@@ -442,39 +444,38 @@ export default function LeadForm() {
                 </div>
               </div>
             )}
-          </div>
+      </div>
 
-          {/* Navigation Buttons */}
-          <div className="flex gap-4">
-            <button
-              onClick={handleBack}
-              disabled={currentStep === 0 || isLoading}
-              className="flex-1 py-3 px-4 rounded-lg border border-gray-300 text-gray-700 font-semibold hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2"
-            >
-              <ArrowLeft size={20} />
-              Back
-            </button>
+        {/* Navigation Buttons */}
+      <div className="flex gap-4 mt-8">
+        <button
+          onClick={handleBack}
+          disabled={currentStep === 0 || isLoading}
+          className="flex-1 py-3 px-4 rounded-lg border border-gray-300 text-gray-700 font-semibold hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2"
+        >
+          <ArrowLeft size={20} />
+          Back
+        </button>
 
-            <button
-              onClick={handleNext}
-              disabled={isLoading}
-              className="flex-1 py-3 px-4 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors disabled:bg-blue-400 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2"
-            >
-              {isLoading ? (
-                <>
-                  <Loader2 size={20} className="animate-spin" />
-                  Submitting...
-                </>
-              ) : (
-                <>
-                  {currentStep === STEPS.length - 1 ? 'Submit' : 'Continue'}
-                  <ArrowRight size={20} />
-                </>
-              )}
-            </button>
-          </div>
-        </div>
-      </main>
+        <button
+          onClick={handleNext}
+          disabled={isLoading}
+          className="flex-1 py-3 px-4 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors disabled:bg-blue-400 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2"
+        >
+          {isLoading ? (
+            <>
+              <Loader2 size={20} className="animate-spin" />
+              Submitting...
+            </>
+          ) : (
+            <>
+              {currentStep === STEPS.length - 1 ? 'Submit' : 'Continue'}
+              <ArrowRight size={20} />
+            </>
+          )}
+        </button>
+      </div>
+      </div>
     </div>
   );
 }
