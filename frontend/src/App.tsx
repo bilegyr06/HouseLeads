@@ -2,6 +2,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Landing from './pages/Landing';
 import LeadForm from './pages/LeadForm';
 import Confirmation from './pages/Confirmation';
+import './App.css';
+import './App.css';
 
 function App() {
   return (
