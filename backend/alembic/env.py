@@ -3,6 +3,10 @@ from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 from alembic import context
+from app.core.config import settings
+from app.core.database import Base
+import app.models  # ensures models are registered on Base.metadata
+import os
 
 # Ensure project root is on sys.path so `app` package imports work
 import sys
@@ -19,14 +23,11 @@ try:
 except Exception:
     pass
 
-import os
 os.environ.setdefault("PAYSTACK_SECRET_KEY", "")
 os.environ.setdefault("PAYSTACK_PUBLIC_KEY", "")
 os.environ.setdefault("JWT_SECRET_KEY", "alembic-placeholder-key")
 
-from app.core.config import settings
-from app.core.database import Base
-import app.models  # ensures models are registered on Base.metadata
+
 
 config = context.config
 
