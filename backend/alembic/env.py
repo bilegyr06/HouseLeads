@@ -4,6 +4,26 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 from alembic import context
 
+# Ensure project root is on sys.path so `app` package imports work
+import sys
+from pathlib import Path
+HERE = Path(__file__).resolve().parent
+PROJECT_ROOT = HERE.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+# Load .env if present and ensure minimal env vars exist so Settings() can initialize
+try:
+    from dotenv import load_dotenv
+    load_dotenv(PROJECT_ROOT / ".env")
+except Exception:
+    pass
+
+import os
+os.environ.setdefault("PAYSTACK_SECRET_KEY", "")
+os.environ.setdefault("PAYSTACK_PUBLIC_KEY", "")
+os.environ.setdefault("JWT_SECRET_KEY", "alembic-placeholder-key")
+
 from app.core.config import settings
 from app.core.database import Base
 import app.models  # ensures models are registered on Base.metadata
@@ -14,7 +34,10 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 # Pull URL from your app settings (.env), not hardcoded alembic.ini
-config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
+db_url = settings.DATABASE_URL
+# configparser treats '%' specially; escape them so URLs with '%' work
+db_url_escaped = db_url.replace('%', '%%')
+config.set_main_option("sqlalchemy.url", db_url_escaped)
 
 target_metadata = Base.metadata
 
