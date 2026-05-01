@@ -11,7 +11,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.core.config import settings
-from app.core.database import Base, engine
+from app.core.database import engine
 from app.routes import leads, agents, payments, auth
 
 
@@ -19,14 +19,8 @@ from app.routes import leads, agents, payments, auth
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """
-    Manage app lifespan: initialize database tables on startup,
-    clean up on shutdown.
+    Manage app lifespan and clean up database connections on shutdown.
     """
-    # Startup
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-    print("✅ Database tables initialized")
-    
     yield
     
     # Shutdown

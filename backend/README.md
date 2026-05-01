@@ -35,7 +35,21 @@ venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### 4. Configure Environment
+### 4. Initialize Alembic
+
+If this is the first time setting up migrations:
+
+```bash
+alembic init alembic
+```
+
+If your database already has the current tables from the old startup flow, stamp the baseline once before running future upgrades:
+
+```bash
+alembic stamp head
+```
+
+### 5. Configure Environment
 
 ```bash
 # Copy example to actual .env
@@ -47,7 +61,17 @@ cp .env.example .env
 # - JWT_SECRET_KEY
 ```
 
-### 5. Start the Application
+### 6. Run the Migrations
+
+Create the initial migration once the Alembic environment exists:
+
+```bash
+alembic upgrade head
+```
+
+After that, use the same command whenever models change and a new revision has been created.
+
+### 7. Start the Application
 
 **Windows:**
 ```bash
@@ -64,7 +88,7 @@ bash run.sh
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-### 6. Access the API
+### 8. Access the API
 
 - **API Documentation (Swagger):** http://localhost:8000/docs
 - **API Schema (ReDoc):** http://localhost:8000/redoc
@@ -103,6 +127,7 @@ backend/
 │   │   └── helpers.py          # Utility functions
 │   └── main.py                 # FastAPI app initialization
 ├── alembic/                    # Database migrations
+├── alembic.ini                 # Alembic configuration
 ├── .env                        # Environment variables (git-ignored)
 ├── .env.example                # Environment template
 ├── requirements.txt            # Python dependencies
@@ -199,6 +224,30 @@ Match Score = (40% × Location) + (30% × Rating) + (20% × Quality) + (10% × C
 - **JWT Secrets:** Change `JWT_SECRET_KEY` in production
 - **Paystack Keys:** Use test keys for development, live keys for production
 - **CORS:** Update `allow_origins` in `app/main.py` for production frontend URL
+
+---
+
+## Database Migrations
+
+Alembic is now the source of truth for schema changes.
+
+### Common Commands
+
+```bash
+alembic revision --autogenerate -m "describe change"
+alembic upgrade head
+alembic downgrade -1
+```
+
+### Existing Database
+
+If the database already contains tables from the old `create_all` startup flow, run this once after creating the first revision:
+
+```bash
+alembic stamp head
+```
+
+After that, migrations should be applied with `alembic upgrade head`.
 
 ---
 

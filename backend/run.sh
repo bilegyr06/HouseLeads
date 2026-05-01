@@ -31,9 +31,9 @@ echo "✅ Virtual environment activated"
 echo "📦 Installing dependencies..."
 pip install -r requirements.txt
 
-# Run database migrations (if using Alembic)
-# echo "🗄️  Running database migrations..."
-# alembic upgrade head
+# Run database migrations
+echo "🗄️  Running database migrations..."
+alembic upgrade head
 
 # Start the application
 echo ""

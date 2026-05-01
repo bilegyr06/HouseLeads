@@ -9,7 +9,7 @@ from sqlalchemy import text
 
 
 async def test_database_connection():
-    """Test PostgreSQL connection and schema initialization."""
+    """Test PostgreSQL connection and verify ORM models can be imported."""
     
     print("=" * 70)
     print("🔍 DATABASE CONNECTION TEST")
@@ -20,8 +20,8 @@ async def test_database_connection():
         # Import after print to show progress
         print("📦 Importing app configuration...")
         from app.core.config import settings
-        from app.core.database import engine, Base
-        from app.models import TenantLead, Agent, LeadPurchase
+        from app.core.database import engine
+        from app.models import TenantLead, Agent, LeadPurchase, LeadMatch
         
         print(f"✅ Config loaded successfully")
         print(f"   Database URL: {settings.DATABASE_URL.replace(settings.DATABASE_URL.split('@')[0].split('://')[1], '***:***')}")
@@ -34,13 +34,6 @@ async def test_database_connection():
             version = result.scalar()
             print(f"✅ Connected to PostgreSQL")
             print(f"   {version}")
-        print()
-        
-        # Create tables
-        print("📊 Creating database tables...")
-        async with engine.begin() as conn:
-            await conn.run_sync(Base.metadata.create_all)
-        print(f"✅ Tables created/verified successfully")
         print()
         
         # List tables
@@ -65,6 +58,7 @@ async def test_database_connection():
             ("TenantLead", TenantLead),
             ("Agent", Agent),
             ("LeadPurchase", LeadPurchase),
+            ("LeadMatch", LeadMatch),
         ]
         for name, model in models:
             print(f"   ✅ {name} - {model.__tablename__}")
