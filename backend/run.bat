@@ -47,6 +47,15 @@ if !errorlevel! neq 0 (
     exit /b 1
 )
 
+REM Run database migrations
+echo 🗄️ Running database migrations...
+alembic upgrade head
+if !errorlevel! neq 0 (
+    echo ❌ Failed to run migrations
+    pause
+    exit /b 1
+)
+
 REM Start the application
 echo.
 echo 🎯 Starting FastAPI server on http://0.0.0.0:8000

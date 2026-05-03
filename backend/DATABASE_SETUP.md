@@ -52,6 +52,20 @@ Password: Dejavu@1510 (URL-encoded as Dejavu%401510)
 
 ## 🚀 Starting the API
 
+Alembic now manages schema changes for this backend.
+
+### First-time migration setup
+
+```bash
+alembic upgrade head
+```
+
+If your database already existed before Alembic was added, run this once first to mark the current schema as the baseline:
+
+```bash
+alembic stamp head
+```
+
 ### Option 1: Using Batch Script (Windows)
 ```bash
 run.bat
