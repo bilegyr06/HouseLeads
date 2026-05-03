@@ -3,10 +3,6 @@ from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 from alembic import context
-from app.core.config import settings
-from app.core.database import Base
-import app.models  # ensures models are registered on Base.metadata
-import os
 
 # Ensure project root is on sys.path so `app` package imports work
 import sys
@@ -16,18 +12,23 @@ PROJECT_ROOT = HERE.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-# Load .env if present and ensure minimal env vars exist so Settings() can initialize
+# Load .env before importing application settings so Settings() sees it
 try:
     from dotenv import load_dotenv
     load_dotenv(PROJECT_ROOT / ".env")
 except Exception:
     pass
 
+import os
+# Ensure minimal environment variables exist so Settings() can initialize
 os.environ.setdefault("PAYSTACK_SECRET_KEY", "")
 os.environ.setdefault("PAYSTACK_PUBLIC_KEY", "")
 os.environ.setdefault("JWT_SECRET_KEY", "alembic-placeholder-key")
 
-
+# Now import application settings and models (after sys.path + .env are set)
+from app.core.config import settings
+from app.core.database import Base
+import app.models  # ensures models are registered on Base.metadata
 
 config = context.config
 
